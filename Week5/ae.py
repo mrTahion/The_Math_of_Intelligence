@@ -18,8 +18,8 @@ X_train = data.drop(columns_drop, axis=1)
 maxs = np.amax(X_train, axis=0)
 mins = np.amin(X_train, axis=0)
 
-AEdata = (X_train - mins) / (maxs - mins)
-AEdata = AEdata.transpose()
+AE_data = (X_train - mins) / (maxs - mins)
+AE_data = AE_data.transpose()
 
 # Sigmoid
 def sigmoid(x):
@@ -42,9 +42,9 @@ def new_layer(dim_in, dim_out):
     return {
         'weights': weights,
         'bias': bias,
-        'activations': np.zeros((dim_out, AEdata.shape[1])),
-        'act_grad': np.zeros((dim_out, AEdata.shape[1])),
-        'errors': np.zeros((dim_out, AEdata.shape[1])),
+        'activations': np.zeros((dim_out, AE_data.shape[1])),
+        'act_grad': np.zeros((dim_out, AE_data.shape[1])),
+        'errors': np.zeros((dim_out, AE_data.shape[1])),
         'weights_grad': np.zeros(weights.shape),
         'bias_grad': np.zeros(bias.shape)
     }
@@ -114,8 +114,8 @@ def trainAE(activation_function, learning_rate, epochs):
     
     # Run through the epochs
     for epoch in range(epochs):
-        forward_propagate(layers, AEdata, activation_function)
-        backward_propagate(layers, AEdata, AEdata)
+        forward_propagate(layers, AE_data, activation_function)
+        backward_propagate(layers, AE_data, AE_data)
         gradient_descent(layers, learning_rate)
         error_history.append(error_function(layers))
     
@@ -129,5 +129,5 @@ ec1 = np.array(layers[6]['activations'][0, :].transpose())
 ec2 = np.array(layers[6]['activations'][1, :].transpose())
 
 # Plot encoded data
-plt.scatter(ec1, ec2, c=labels)
+plt.scatter(ec1, ec2, c=y_train)
 plt.show()                                
